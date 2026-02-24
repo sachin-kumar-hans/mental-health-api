@@ -4,74 +4,76 @@ import joblib
 
 app = FastAPI()
 
-# Load model
+# Load model once at startup
 model = joblib.load("mentalh_model.pkl")
 vectorizer = joblib.load("vectorizr.pkl")
 
-# HTML Template (inside Python)
-html_content = """
+# HTML + CSS embedded
+HTML_PAGE = """
 <!DOCTYPE html>
 <html>
 <head>
     <title>AI Mental Health Prediction</title>
     <style>
         body {
-            font-family: Arial;
-            background: #f4f6f9;
-            text-align: center;
-            padding: 50px;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #74ebd5, #9face6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
-        .container {
+        .card {
             background: white;
             padding: 40px;
             border-radius: 15px;
-            box-shadow: 0px 0px 15px rgba(0,0,0,0.1);
-            width: 50%;
-            margin: auto;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            width: 500px;
+            text-align: center;
         }
         textarea {
             width: 100%;
             height: 120px;
             padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
         }
         button {
-            padding: 10px 20px;
-            background: #2E86C1;
-            color: white;
-            border: none;
-            border-radius: 5px;
             margin-top: 15px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background-color: #4CAF50;
+            color: white;
             cursor: pointer;
         }
         button:hover {
-            background: #1f6391;
+            background-color: #45a049;
         }
         .result {
             margin-top: 20px;
             font-size: 20px;
-            color: #E74C3C;
             font-weight: bold;
+            color: #333;
         }
     </style>
 </head>
 <body>
-
-<div class="container">
-    <h2>🧠 AI Mental Health Prediction</h2>
-    <form method="post">
-        <textarea name="text" placeholder="Enter your thoughts here..."></textarea><br>
-        <button type="submit">Predict</button>
-    </form>
-    {result_section}
-</div>
-
+    <div class="card">
+        <h2>🧠 Mental Health Prediction</h2>
+        <form method="post">
+            <textarea name="text" placeholder="Enter your thoughts here..."></textarea><br>
+            <button type="submit">Predict</button>
+        </form>
+        {result}
+    </div>
 </body>
 </html>
 """
 
 @app.get("/", response_class=HTMLResponse)
 def home():
-    return html_content.format(result_section="")
+    return HTML_PAGE.format(result="")
 
 @app.post("/", response_class=HTMLResponse)
 def predict(text: str = Form(...)):
@@ -79,5 +81,5 @@ def predict(text: str = Form(...)):
     vector = vectorizer.transform([cleaned])
     prediction = model.predict(vector)[0]
 
-    result_html = f'<div class="result">Prediction: {prediction}</div>'
-    return html_content.format(result_section=result_html)
+    result_html = f"<div class='result'>Prediction: {prediction}</div>"
+    return HTML_PAGE.format(result=result_html)
