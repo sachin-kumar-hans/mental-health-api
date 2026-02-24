@@ -4,4 +4,4 @@ scikit-learn
 joblib
 numpy
 scipy
-pydantic
+python-multipart
