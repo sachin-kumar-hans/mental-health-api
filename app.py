@@ -72,7 +72,7 @@ def generate_html(result=""):
     </head>
     <body>
         <div class="card">
-            <h2>🧠 Mental Health Prediction</h2>
+            <h2>🧠 AI-based Mental Health Prediction</h2>
             <form method="post">
                 <textarea name="text" placeholder="Enter your thoughts here..."></textarea><br>
                 <button type="submit">Predict</button>
